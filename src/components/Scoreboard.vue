@@ -1,22 +1,18 @@
 <template>
   <div>
-    <Scoreboard />
-    <Canvas />
+    <ul class="list-group">
+      <li class="list-group-item">Cras justo odio</li>
+      <li class="list-group-item">Dapibus ac facilisis in</li>
+    </ul>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import io from 'socket.io-client';
-import Canvas from '@/components/Canvas.vue';
-import Scoreboard from '@/components/Scoreboard.vue';
 
 export default {
-  name: 'home',
-  components: {
-    Canvas,
-    Scoreboard
-  },
+  name: 'Scoreboard',
   data() {
     return {
       
