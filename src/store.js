@@ -38,6 +38,7 @@ export default new Vuex.Store({
           name: name,
         })
         .then((docRef) => {
+          console.log(docRef)
           console.log("Document successfully written with Id!", docRef.id);
         })
         .catch(function (error) {
@@ -75,7 +76,7 @@ export default new Vuex.Store({
         .collection("Rooms")
         .onSnapshot(function (querySnapshot) {
           const data = querySnapshot.docs.map(function (doc) {
-            return { id: doc.data().id, ...doc.data() }
+            return { id: doc.id, ...doc.data() }
           })
           commit('initialData', data)
         })

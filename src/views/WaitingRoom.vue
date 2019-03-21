@@ -1,6 +1,6 @@
 <template>
   <div>
-
+    <h1>ini adalah waiting room</h1>
   </div>
 
 </template>

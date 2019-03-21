@@ -1,7 +1,10 @@
 
 <template>
   <div class="container">
-
+      <v-layout align-center justify-space-around row fill-height>
+      <h1>{{player1name}}</h1>
+      <h1>{{player2name}}</h1>
+    </v-layout>
   </div>
 </template>
 
@@ -21,7 +24,16 @@ export default {
     }
   },
   methods: {
-
+    getPlayer() {
+      let roomId = this.$store.state.dataUser.room.id;
+      db.collection("Rooms")
+        .doc(`${roomId}`)
+        .onSnapshot(doc => {
+          console.log(doc.data());
+          this.player1name = doc.data().players[0].name;
+          this.player2name = doc.data().players[1].name;
+        });
+    },
   },
   mounted () {
     this.getPlayer()
