@@ -17,43 +17,18 @@ export default {
     return {
       socket: io('localhost:3000'),
       isPlaying: false,
-      coins: [],
     }
   },
   mounted() {
     const canvas = document.getElementById('myCanvas');
     const ctx = canvas.getContext('2d');
     const coinImage = document.getElementById('source');
-    const drawBoard = (gameState) => {
-      this.coins = gameState.coins;
-      let coins = this.coins
-      for(let id in gameState.players) {
-        for(let i = 0; i < coins.length; i++) {
-        if(gameState.players[id].x < coins[i].x + 25 &&
-          gameState.players[id].x + 25 > coins[i].x &&
-          gameState.players[id].y < coins[i].y + 25 &&
-          gameState.players[id].y + 25 > coins[i].y) {
-            this.coins.splice(i, 1);
-            this.socket.emit('removeCoin', i);
-          } else {
-            ctx.drawImage(coinImage, coins[i].x, coins[i].y, 25, 25);
-          }
-        }
-        ctx.beginPath();
-        ctx.rect(gameState.players[id].x, gameState.players[id].y, gameState.players[id].width, gameState.players[id].height);
-        ctx.fillStyle = '#0095DD';
-        ctx.fill();
-        ctx.closePath();
-      }
-    }
-
     const playerMovement = {
       up: false,
       down: false,
       left: false,
       right: false
     };
-
     const keyDownHandler = (e) => {
       if (e.keyCode == 39) {
       playerMovement.right = true;
@@ -65,7 +40,6 @@ export default {
         playerMovement.down = true;
       }
     };
-    
     const keyUpHandler = (e) => {
       if (e.keyCode == 39) {
         playerMovement.right = false;
@@ -77,9 +51,30 @@ export default {
         playerMovement.down = false;
       }
     };
-
     document.addEventListener('keydown', keyDownHandler, false);
     document.addEventListener('keyup', keyUpHandler, false);
+
+    const drawBoard = (gameState) => {
+      let coins = gameState.coins;
+      for(let id in gameState.players) {
+        for(let i = 0; i < coins.length; i++) {
+        if(gameState.players[id].x < coins[i].x + 25 &&
+          gameState.players[id].x + 25 > coins[i].x &&
+          gameState.players[id].y < coins[i].y + 25 &&
+          gameState.players[id].y + 25 > coins[i].y) {
+            coins.splice(i, 1);
+            this.socket.emit('coinState', coins);
+          } else {
+            ctx.drawImage(coinImage, coins[i].x, coins[i].y, 25, 25);
+          }
+        }
+        ctx.beginPath();
+        ctx.rect(gameState.players[id].x, gameState.players[id].y, gameState.players[id].width, gameState.players[id].height);
+        ctx.fillStyle = '#0095DD';
+        ctx.fill();
+        ctx.closePath();
+      }
+    }
 
     this.socket.emit('newPlayer');
 
