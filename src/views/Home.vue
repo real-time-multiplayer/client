@@ -1,23 +1,30 @@
 <template>
-  <div>
+  <v-app>
     <v-layout align-start justify-center row fill-height>
-    <CreateRoom></CreateRoom>
-    <RoomList></RoomList>
+      <!-- <CreateRoom></CreateRoom>
+      <RoomList></RoomList>-->
+
+      <Scoreboard/>
+      <Canvas/>
     </v-layout>
-  </div>
+  </v-app>
 </template>
 
 <script>
-import CreateRoom from '@/components/CreateRoom.vue'
-import RoomList from '@/components/RoomList.vue'
+// @ is an alias to /src
+import io from "socket.io-client";
+import Canvas from "@/components/Canvas.vue";
+import Scoreboard from "@/components/Scoreboard.vue";
+
 export default {
-  name: 'home',
+  name: "home",
   components: {
-    CreateRoom,
-    RoomList
+    Canvas,
+    Scoreboard
   },
-  created () {
-    this.$store.dispatch('getRoom')
-  }
-}
+  data() {
+    return {};
+  },
+  mounted() {}
+};
 </script>
