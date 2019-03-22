@@ -1,52 +1,56 @@
-/* eslint-disable */
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from 'vue';
+import Vuex from 'vuex';
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     roomList: [],
-    playermove: 'smile',
-    playerscore: 0,
-    dataUser: {}
+    roomName: '',
+    currentJoint: '',
+    currentUsers: []
   },
   mutations: {
-    //siapin functio
-    mutateRoom(state, roomArr) {
+    mutateRoom(state, roomObj) {
+      state.roomList.push(roomObj);
+    },
+
+    mutatefetchRoom(state, roomArr) {
       state.roomList = roomArr
     },
-    initialData(state, arrRoom) {
-      state.roomList = arrRoom
+
+    mutateRoomName(state, roomName) {
+      state.roomName = roomName
     },
-    changeMove(state, playermove) {
-      state.playermove = playermove
+
+    mutateCurrRoom(state, data) {
+      state.currentJoint = data.roomName,
+      state.currentUsers = data.currUsers
     },
-    changeScore(state, playerscore) {
-      state.playerscore = playerscore
-    },
-    mutateDataUser(state, payload) {
-      state.dataUser = payload
+
+    mutateCurrUsers(state, newJoin) {
+      state.currentUsers.push(newJoin)
     }
   },
   actions: {
-    createUser({ commit }, name) {
-      
-    },
     createRoom({ commit }, dataObj) {
-      
+      commit('mutateRoom', dataObj)
     },
-    getRoom({ commit }) {
-      
+
+    fetchRoom({ commit }, dataArr) {
+      commit('mutatefetchRoom', dataArr)
     },
-    changeMove({ commit }, playermove) {
-      
+
+    changeSelectedRoom({ commit }, roomName) {
+      commit('mutateRoomName', roomName)
     },
-    changeScore({ commit }, playerscore) {
-      
+
+    currentRoom({ commit }, data) {
+      commit('mutateCurrRoom', data)
     },
-    setUser({ commit }, payload) {
-      
+
+    newJoin({ commit }, newJoin) {
+      commit('mutateCurrUsers', newJoin)
     }
-  }
-})
+  },
+});
