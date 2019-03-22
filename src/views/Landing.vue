@@ -19,11 +19,16 @@ export default {
       view: "CreateRoom"
     };
   },
-  created() {
-    this.$socket.on('fetchRoom', (data) => {
-      this.$store.dispatch('fetchRoom', data.roomList);;
-    });
-  }
+  sockets: {
+    fetchRoom(data) {
+      this.$store.dispatch('fetchRoom', data.roomList);
+    }
+  },
+  // created() {
+  //   this.$socket.on('fetchRoom', (data) => {
+      
+  //   });
+  // }
 };
 </script>
 <style>

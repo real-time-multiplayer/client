@@ -63,6 +63,14 @@ export default {
   components: {
     CreateUser
   },
+  sockets: {
+    createRoom(roomObj) {
+      this.$store.dispatch('createRoom', roomObj);
+      this.roomData.roomName = '';
+      this.roomData.capacity = 1;
+      this.users = []
+    }
+  },
   data() {
     return {
       roomData: {
@@ -76,14 +84,6 @@ export default {
     roomList () {
       return this.$store.state.roomList;
     }
-  },
-  created() {
-    this.$socket.on('createRoom', (roomObj) => {
-      this.$store.dispatch('createRoom', roomObj);
-      this.roomData.roomName = '';
-      this.roomData.capacity = 1;
-      this.users = []
-    });
   },
   methods: {
     createRoom() {
