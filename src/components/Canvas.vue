@@ -4,9 +4,9 @@
     <div style="display: none;">
       <img id="source" src="@/assets/coin.png">
     </div>
-    <button @click="toggle">Toggle</button>
+    <button class="btn btn-primary" @click="toggle">Toggle</button>
     <ul>
-      <li>{{ scores }}</li>
+      <li v-for="player in gameState.players">{{ player.name }}: {{ player.score }}</li>
     </ul>
   </div>
 </template>
@@ -21,15 +21,16 @@ export default {
       isPlaying: false,
       ctx: '',
       coinImage: '',
-      scores: {}
+      gameState: {}
     }
   },
   sockets: {
     connect() {
-      this.newPlayer();
+      
     },
     state(gameState) {
-      this.drawBoard(gameState);
+      this.gameState = gameState
+      this.drawBoard();
     }
   },
   mounted() {
@@ -67,41 +68,39 @@ export default {
     document.addEventListener('keyup', keyUpHandler, false);
 
     setInterval(() => {
-      this.$socket.emit('playerMovement', playerMovement);
+      this.$socket.emit('playerMovement', { playerMovement, roomName: this.$store.state.currentJoint });
     }, 1000 / 60);
   },
   methods: {
     toggle() {
-      this.$socket.emit('toggleGame')
+      this.$socket.emit('toggleGame', this.$store.state.currentJoint)
     },
-    drawBoard(gameState) {
+    drawBoard() {
       this.ctx.clearRect(0, 0, 480, 320);
-      let coins = gameState.coins;
-      for(let id in gameState.players) {
-        this.$set(this.scores, id, { score })
+      let coins = this.gameState.coins;
+      for(let id in this.gameState.players) {
         
         for(let i = 0; i < coins.length; i++) {
-        if(gameState.players[id].x < coins[i].x + 25 &&
-          gameState.players[id].x + 25 > coins[i].x &&
-          gameState.players[id].y < coins[i].y + 25 &&
-          gameState.players[id].y + 25 > coins[i].y) {
+        if(this.gameState.players[id].x < coins[i].x + 25 &&
+          this.gameState.players[id].x + 25 > coins[i].x &&
+          this.gameState.players[id].y < coins[i].y + 25 &&
+          this.gameState.players[id].y + 25 > coins[i].y) {
             coins.splice(i, 1);
-            this.$socket.emit('coinState', coins);
-            this.scores[id].score++;
+            this.$socket.emit('coinState', { coins, roomName: this.$store.state.currentJoint, id });
           } else {
             this.ctx.drawImage(this.coinImage, coins[i].x, coins[i].y, 25, 25);
           }
         }
         this.ctx.beginPath();
-        this.ctx.rect(gameState.players[id].x, gameState.players[id].y, gameState.players[id].width, gameState.players[id].height);
+        this.ctx.rect(this.gameState.players[id].x, this.gameState.players[id].y, this.gameState.players[id].width, this.gameState.players[id].height);
         this.ctx.fillStyle = '#0095DD';
         this.ctx.fill();
         this.ctx.closePath();
       }
     },
-    newPlayer() {
-      this.$socket.emit('newPlayer');
-    }
+    // newPlayer() {
+    //   this.$socket.emit('newPlayer');
+    // }
   }
 };
 </script>
