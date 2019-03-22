@@ -22,13 +22,8 @@ export default {
   sockets: {
     fetchRoom(data) {
       this.$store.dispatch('fetchRoom', data.roomList);
-    }
+    },
   },
-  // created() {
-  //   this.$socket.on('fetchRoom', (data) => {
-      
-  //   });
-  // }
 };
 </script>
 <style>

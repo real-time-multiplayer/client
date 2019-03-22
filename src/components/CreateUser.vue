@@ -16,14 +16,13 @@
           </button>
         </div>
         <div class="modal-body">
-          <form class="text-left">
+          <form @submit.prevent="enteringPlayer" class="text-left">
             <div class="form-group">
               <label for="name">Username</label>
               <input v-model="username" type="text" class="form-control" placeholder="Your username" id="name">
             </div>
+            <button type="submit" class="btn btn-primary">Enter Room</button>
           </form>
-        
-          <button v-on:click.prevent="enteringPlayer" type="submit" class="btn btn-primary">Enter Room</button>
         </div>
       </div>
     </div>
