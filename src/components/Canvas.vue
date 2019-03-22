@@ -26,7 +26,7 @@ export default {
   },
   sockets: {
     connect() {
-      this.newPlayer();
+      
     },
     state(gameState) {
       this.gameState = gameState
@@ -68,12 +68,12 @@ export default {
     document.addEventListener('keyup', keyUpHandler, false);
 
     setInterval(() => {
-      this.$socket.emit('playerMovement', playerMovement);
+      this.$socket.emit('playerMovement', { playerMovement, roomName: this.$store.state.currentJoint });
     }, 1000 / 60);
   },
   methods: {
     toggle() {
-      this.$socket.emit('toggleGame')
+      this.$socket.emit('toggleGame', this.$store.state.currentJoint)
     },
     drawBoard() {
       this.ctx.clearRect(0, 0, 480, 320);
@@ -86,7 +86,7 @@ export default {
           this.gameState.players[id].y < coins[i].y + 25 &&
           this.gameState.players[id].y + 25 > coins[i].y) {
             coins.splice(i, 1);
-            this.$socket.emit('coinState', coins, id);
+            this.$socket.emit('coinState', { coins, roomName: this.$store.state.currentJoint, id });
           } else {
             this.ctx.drawImage(this.coinImage, coins[i].x, coins[i].y, 25, 25);
           }
@@ -98,9 +98,9 @@ export default {
         this.ctx.closePath();
       }
     },
-    newPlayer() {
-      this.$socket.emit('newPlayer');
-    }
+    // newPlayer() {
+    //   this.$socket.emit('newPlayer');
+    // }
   }
 };
 </script>

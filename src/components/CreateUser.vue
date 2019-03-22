@@ -41,6 +41,10 @@ export default {
   sockets: {
     enterRoom(data) {
       this.$store.dispatch('currentRoom', data)
+      $('#join-room').modal('toggle');
+      this.$router.push({
+        path: "/game"
+      })
     },
     newJoin(newUser) {
       this.$store.dispatch('newJoin', newUser)

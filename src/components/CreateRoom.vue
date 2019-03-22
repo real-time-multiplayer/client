@@ -76,7 +76,12 @@ export default {
       roomData: {
         roomName: '',
         capacity: 1,
-        users: []
+        users: [],
+        gameState: {
+          players: {},
+          coins: [],
+          isPlaying: false
+        }
       },
     };
   },
