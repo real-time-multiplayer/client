@@ -4,10 +4,13 @@
     <div style="display: none;">
       <img id="source" src="@/assets/coin.png">
     </div>
-    <button class="btn btn-primary" @click="toggle">Toggle</button>
+    <button class="btn btn-primary" @click="toggle" v-if="!gameState.isPlaying">Toggle</button>
     <ul>
       <li v-for="player in gameState.players">{{ player.name }}: {{ player.score }}</li>
     </ul>
+    <audio controls autoplay style="display:none">
+      <source src="https://www.dl-sounds.com/wp-content/uploads/edd/2018/10/Melody-in-F-preview.mp3" type="audio/mpeg">
+    </audio>
   </div>
 </template>
 
@@ -18,10 +21,16 @@ export default {
   name: 'Canvas',
   data() {
     return {
-      isPlaying: false,
       ctx: '',
       coinImage: '',
-      gameState: {}
+      gameState: {},
+      interval: '',
+      playerMovement: {
+        up: false,
+        down: false,
+        left: false,
+        right: false
+      }
     }
   },
   sockets: {
@@ -33,43 +42,38 @@ export default {
       this.drawBoard();
     }
   },
+  beforeDestroy() {
+    clearInterval(this.interval);
+  },
   mounted() {
     this.coinImage = document.getElementById('source');
     this.ctx = document.getElementById('myCanvas').getContext('2d');
-    const playerMovement = {
-      up: false,
-      down: false,
-      left: false,
-      right: false
-    };
+    
     const keyDownHandler = (e) => {
       if (e.keyCode == 39) {
-        playerMovement.right = true;
+        this.playerMovement.right = true;
       } else if (e.keyCode == 37) {
-        playerMovement.left = true;
+        this.playerMovement.left = true;
       } else if (e.keyCode == 38) {
-        playerMovement.up = true;
+        this.playerMovement.up = true;
       } else if (e.keyCode == 40) {
-        playerMovement.down = true;
+        this.playerMovement.down = true;
       }
     };
     const keyUpHandler = (e) => {
       if (e.keyCode == 39) {
-        playerMovement.right = false;
+        this.playerMovement.right = false;
       } else if (e.keyCode == 37) {
-        playerMovement.left = false;
+        this.playerMovement.left = false;
       } else if (e.keyCode == 38) {
-        playerMovement.up = false;
+        this.playerMovement.up = false;
       } else if (e.keyCode == 40) {
-        playerMovement.down = false;
+        this.playerMovement.down = false;
       }
     };
     document.addEventListener('keydown', keyDownHandler, false);
     document.addEventListener('keyup', keyUpHandler, false);
-
-    setInterval(() => {
-      this.$socket.emit('playerMovement', { playerMovement, roomName: this.$store.state.currentJoint });
-    }, 1000 / 60);
+    this.initGame();
   },
   methods: {
     toggle() {
@@ -95,12 +99,17 @@ export default {
         this.ctx.rect(this.gameState.players[id].x, this.gameState.players[id].y, this.gameState.players[id].width, this.gameState.players[id].height);
         this.ctx.fillStyle = '#0095DD';
         this.ctx.fill();
+        this.ctx.fillStyle = '#000000';
+        this.ctx.font = "14pt Calibri";
+        this.ctx.fillText(this.gameState.players[id].name, this.gameState.players[id].x, this.gameState.players[id].y);
         this.ctx.closePath();
       }
     },
-    // newPlayer() {
-    //   this.$socket.emit('newPlayer');
-    // }
+    initGame() {
+      this.interval = setInterval(() => {
+        this.$socket.emit('playerMovement', { playerMovement: this.playerMovement, roomName: this.$store.state.currentJoint });
+      }, 1000 / 60);
+    }
   }
 };
 </script>
