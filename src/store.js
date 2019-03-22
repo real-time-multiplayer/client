@@ -1,95 +1,56 @@
-/* eslint-disable */
-import Vue from 'vue'
-import Vuex from 'vuex'
-import db from '@/scripts/config.js'
+import Vue from 'vue';
+import Vuex from 'vuex';
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     roomList: [],
-    playermove: 'smile',
-    playerscore: 0,
-    dataUser: {}
+    roomName: '',
+    currentJoint: '',
+    currentUsers: []
   },
   mutations: {
-    //siapin functio
-    mutateRoom(state, roomArr) {
+    mutateRoom(state, roomObj) {
+      state.roomList.push(roomObj);
+    },
+
+    mutatefetchRoom(state, roomArr) {
       state.roomList = roomArr
     },
-    initialData(state, arrRoom) {
-      state.roomList = arrRoom
+
+    mutateRoomName(state, roomName) {
+      state.roomName = roomName
     },
-    changeMove(state, playermove) {
-      state.playermove = playermove
+
+    mutateCurrRoom(state, data) {
+      state.currentJoint = data.roomName,
+      state.currentUsers = data.currUsers
     },
-    changeScore(state, playerscore) {
-      state.playerscore = playerscore
-    },
-    mutateDataUser(state, payload) {
-      state.dataUser = payload
+
+    mutateCurrUsers(state, newJoin) {
+      state.currentUsers.push(newJoin)
     }
   },
   actions: {
-    createUser({ commit }, name) {
-      db
-        .collection("Users")
-        .add({
-          name: name,
-        })
-        .then((docRef) => {
-          console.log("Document successfully written with Id!", docRef.id);
-        })
-        .catch(function (error) {
-          console.error("Error writing document: ", error);
-        });
-    },
     createRoom({ commit }, dataObj) {
-      db
-        .collection("Rooms")
-        .add({
-          roomName: dataObj.roomName,
-          capacity: dataObj.capacity,
-          players: []
-        })
-        .then((docRef) => {
-          console.log('success')
-          return db
-            .collection("Rooms")
-            .get()
-        })
-        .then(snapshot => {
-          let data = []
-          snapshot.forEach(doc => {
-            data.unshift({ id: doc.id, ...doc.data() })
-          })
-          commit('mutateRoom', data)
-          // console.log(data, '=============================')
-        })
-        .catch(function (error) {
-          console.error("Error writing document: ", error);
-        });
+      commit('mutateRoom', dataObj)
     },
-    getRoom({ commit }) {
-      db
-        .collection("Rooms")
-        .onSnapshot(function (querySnapshot) {
-          const data = querySnapshot.docs.map(function (doc) {
-            return { id: doc.data().id, ...doc.data() }
-          })
-          commit('initialData', data)
-        })
 
+    fetchRoom({ commit }, dataArr) {
+      commit('mutatefetchRoom', dataArr)
+    },
 
+    changeSelectedRoom({ commit }, roomName) {
+      commit('mutateRoomName', roomName)
     },
-    changeMove({ commit }, playermove) {
-      commit('changeMove', playermove)
+
+    currentRoom({ commit }, data) {
+      commit('mutateCurrRoom', data)
     },
-    changeScore({ commit }, playerscore) {
-      commit('changeScore', playerscore)
-    },
-    setUser({ commit }, payload) {
-      commit('mutateDataUser', payload)
+
+    newJoin({ commit }, newJoin) {
+      commit('mutateCurrUsers', newJoin)
     }
-  }
-})
+  },
+});
