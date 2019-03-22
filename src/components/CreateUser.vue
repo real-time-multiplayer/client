@@ -38,14 +38,13 @@ export default {
       username: ''
     }
   },
-  created() {
-    this.$socket.on('enterRoom', (data) => {
+  sockets: {
+    enterRoom(data) {
       this.$store.dispatch('currentRoom', data)
-    }),
-
-    this.$socket.on('newJoin', (newUser) => {
+    },
+    newJoin(newUser) {
       this.$store.dispatch('newJoin', newUser)
-    })
+    }
   },
   methods: {
     enteringPlayer() {
