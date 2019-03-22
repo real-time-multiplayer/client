@@ -1,13 +1,11 @@
 <template>
   <div>
-    <Scoreboard />
     <Canvas />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import io from 'socket.io-client';
 import Canvas from '@/components/Canvas.vue';
 import Scoreboard from '@/components/Scoreboard.vue';
 
