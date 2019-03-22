@@ -4,28 +4,20 @@
     <div style="display: none;">
       <img id="source" src="@/assets/coin.png">
     </div>
-<<<<<<< HEAD
     <button @click="toggle">Toggle</button>
     <ul>
       <li>{{ scores }}</li>
     </ul>
-=======
->>>>>>> add room component + merge with socket game component
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-<<<<<<< HEAD
-=======
-import io from 'socket.io-client';
->>>>>>> add room component + merge with socket game component
 
 export default {
   name: 'Canvas',
   data() {
     return {
-<<<<<<< HEAD
       isPlaying: false,
       ctx: '',
       coinImage: '',
@@ -43,16 +35,6 @@ export default {
   mounted() {
     this.coinImage = document.getElementById('source');
     this.ctx = document.getElementById('myCanvas').getContext('2d');
-=======
-      socket: io('localhost:3000'),
-      isPlaying: false,
-    }
-  },
-  mounted() {
-    const canvas = document.getElementById('myCanvas');
-    const ctx = canvas.getContext('2d');
-    const coinImage = document.getElementById('source');
->>>>>>> add room component + merge with socket game component
     const playerMovement = {
       up: false,
       down: false,
@@ -61,11 +43,7 @@ export default {
     };
     const keyDownHandler = (e) => {
       if (e.keyCode == 39) {
-<<<<<<< HEAD
         playerMovement.right = true;
-=======
-      playerMovement.right = true;
->>>>>>> add room component + merge with socket game component
       } else if (e.keyCode == 37) {
         playerMovement.left = true;
       } else if (e.keyCode == 38) {
@@ -88,7 +66,6 @@ export default {
     document.addEventListener('keydown', keyDownHandler, false);
     document.addEventListener('keyup', keyUpHandler, false);
 
-<<<<<<< HEAD
     setInterval(() => {
       this.$socket.emit('playerMovement', playerMovement);
     }, 1000 / 60);
@@ -103,18 +80,12 @@ export default {
       for(let id in gameState.players) {
         this.$set(this.scores, id, { score })
         
-=======
-    const drawBoard = (gameState) => {
-      let coins = gameState.coins;
-      for(let id in gameState.players) {
->>>>>>> add room component + merge with socket game component
         for(let i = 0; i < coins.length; i++) {
         if(gameState.players[id].x < coins[i].x + 25 &&
           gameState.players[id].x + 25 > coins[i].x &&
           gameState.players[id].y < coins[i].y + 25 &&
           gameState.players[id].y + 25 > coins[i].y) {
             coins.splice(i, 1);
-<<<<<<< HEAD
             this.$socket.emit('coinState', coins);
             this.scores[id].score++;
           } else {
@@ -132,31 +103,5 @@ export default {
       this.$socket.emit('newPlayer');
     }
   }
-=======
-            this.socket.emit('coinState', coins);
-          } else {
-            ctx.drawImage(coinImage, coins[i].x, coins[i].y, 25, 25);
-          }
-        }
-        ctx.beginPath();
-        ctx.rect(gameState.players[id].x, gameState.players[id].y, gameState.players[id].width, gameState.players[id].height);
-        ctx.fillStyle = '#0095DD';
-        ctx.fill();
-        ctx.closePath();
-      }
-    }
-
-    this.socket.emit('newPlayer');
-
-    this.socket.on('state', gameState => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawBoard(gameState)
-    });
-
-    setInterval(() => {
-      this.socket.emit('playerMovement', playerMovement);
-    }, 1000 / 60);
-  },
->>>>>>> add room component + merge with socket game component
 };
 </script>
